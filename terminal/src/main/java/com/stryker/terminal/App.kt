@@ -50,7 +50,7 @@ open class App : Application() {
   }
 
   fun openHelpLink() {
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/zalexdev/strykerapp"))
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/mahmudabegum8859-design/OPXDemom"))
     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     startActivity(intent)
   }

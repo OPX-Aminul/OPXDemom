@@ -54,7 +54,7 @@ class SettingsHomeFragment : Fragment() {
     }
     view.findViewById<View>(R.id.row_github).setOnClickListener {
       runCatching {
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/zalexdev/strykerapp")))
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/mahmudabegum8859-design/OPXDemom")))
       }
     }
   }

@@ -20,7 +20,7 @@ public final class PromoDialogs {
     private static final String KEY_GITHUB = "github_done";
     private static final String KEY_BLOG = "blog_done";
 
-    private static final String GITHUB_URL = "https://github.com/zalexdev/strykerapp";
+    private static final String GITHUB_URL = "https://github.com/mahmudabegum8859-design/OPXDemom";
     private static final String BLOG_URL = "https://zalexdev.com";
 
     private static final int MIN_LAUNCHES = 3;

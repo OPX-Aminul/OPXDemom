@@ -1015,7 +1015,7 @@ Storage is only consumed as the guest writes, and space freed inside the VM is r
     <string name="about_link_site_label">Project site</string>
     <string name="about_link_site_url" translatable="false">zalexdev.com</string>
     <string name="about_link_github_label">Source code</string>
-    <string name="about_link_github_url" translatable="false">github.com/zalexdev/strykerapp</string>
+    <string name="about_link_github_url" translatable="false">github.com/mahmudabegum8859-design/OPXDemom</string>
     <string name="about_oss_licenses_label">Open-source licenses</string>
     <string name="license_subtitle">Stryker is built on these open-source projects. Tap any entry to open its source.</string>
     <string name="about_footer">StrykerOSS — free software (GNU GPL v3.0) — authorized testing only</string>
