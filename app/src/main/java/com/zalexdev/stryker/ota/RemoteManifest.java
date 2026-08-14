@@ -72,6 +72,20 @@ public final class RemoteManifest {
         }
     }
 
+    public static final class RootlessBundle {
+        public final RootlessAssets arm64;
+        public final RootlessAssets arm32;
+
+        RootlessBundle(RootlessAssets arm64, RootlessAssets arm32) {
+            this.arm64 = arm64;
+            this.arm32 = arm32;
+        }
+
+        public RootlessAssets forAbi(boolean armV7) {
+            return armV7 ? arm32 : arm64;
+        }
+    }
+
     public static final class NotificationItem {
         public final int id;
         public final String title;
@@ -91,6 +105,7 @@ public final class RemoteManifest {
     public Asset chroot64;
     public Asset chroot32;
     public RootlessAssets rootless;
+    public RootlessAssets rootless32;
     public AppUpdate app;
     public final List<News> news = new ArrayList<>();
     public final List<NotificationItem> notifications = new ArrayList<>();
@@ -128,6 +143,15 @@ public final class RemoteManifest {
                     asset(rootless.optJSONObject("initrd")),
                     asset(rootless.optJSONObject("libslirp")),
                     asset(rootless.optJSONObject("rootfs")));
+            JSONObject arm32 = rootless.optJSONObject("arm32");
+            if (arm32 != null) {
+                manifest.rootless32 = new RootlessAssets(
+                        asset(arm32.optJSONObject("qemu")),
+                        asset(arm32.optJSONObject("kernel")),
+                        asset(arm32.optJSONObject("initrd")),
+                        asset(arm32.optJSONObject("libslirp")),
+                        asset(arm32.optJSONObject("rootfs")));
+            }
         }
 
         JSONObject app = root.optJSONObject("app");

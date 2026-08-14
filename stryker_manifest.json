@@ -29,35 +29,63 @@
       }
     }
   },
-  "rootless": {
-    "version": "rootless-main",
-    "note": "Local dev ships these inside the APK under assets/rootless/. This block is the OTA fallback; arm64-v8a only.",
-    "qemu": {
-      "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/qemu-system-aarch64",
-      "sha256": "2a87f531371b3f8d45141d48632e0dbe2c3d968fbcb385ba105d671479fb8c99",
-      "size": 43800304
+    "rootless": {
+      "version": "rootless-main",
+      "note": "Local dev ships these inside the APK under assets/rootless/. This block is the OTA fallback; arm64-v8a only.",
+      "qemu": {
+        "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/qemu-system-aarch64",
+        "sha256": "2a87f531371b3f8d45141d48632e0dbe2c3d968fbcb385ba105d671479fb8c99",
+        "size": 43800304
+      },
+      "kernel": {
+        "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/Image",
+        "sha256": "cbe59a02e7ea979a150661032440c94e2c4db0b735af2416e11ae5cac15a58e4",
+        "size": 37605312
+      },
+      "initrd": {
+        "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/initrd.img",
+        "sha256": "655f3ef013e7818e9ee874cf3b44a4c0bdc8a586c986cf237cb74c41862dfd02",
+        "size": 38301815
+      },
+      "libslirp": {
+        "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/libslirp.so",
+        "sha256": "226372426fda32c9fccd8e831d0901a86bfff3c3e6f7a60336d6dde149f756c4",
+        "size": 1145496
+      },
+      "rootfs": {
+        "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/rootfs.imgz",
+        "sha256": "f80c2b1e2433c3036aa745da2a5935cf5dd61b65b17bbeabae87b49bd68a12ef",
+        "size": 427974567
+      },
+      "arm32": {
+        "note": "32-bit ARM (armeabi-v7a) rootless. Populate these once qemu-system-arm, an armv7 kernel/initrd and an armhf rootfs.imgz are published.",
+        "qemu": {
+          "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/qemu-system-arm",
+          "sha256": "",
+          "size": 0
+        },
+        "kernel": {
+          "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/Image-armv7",
+          "sha256": "",
+          "size": 0
+        },
+        "initrd": {
+          "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/initrd-armv7.img",
+          "sha256": "",
+          "size": 0
+        },
+        "libslirp": {
+          "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/libslirp-arm.so",
+          "sha256": "",
+          "size": 0
+        },
+        "rootfs": {
+          "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/rootfs-armv7.imgz",
+          "sha256": "",
+          "size": 0
+        }
+      }
     },
-    "kernel": {
-      "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/Image",
-      "sha256": "cbe59a02e7ea979a150661032440c94e2c4db0b735af2416e11ae5cac15a58e4",
-      "size": 37605312
-    },
-    "initrd": {
-      "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/initrd.img",
-      "sha256": "655f3ef013e7818e9ee874cf3b44a4c0bdc8a586c986cf237cb74c41862dfd02",
-      "size": 38301815
-    },
-    "libslirp": {
-      "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/libslirp.so",
-      "sha256": "226372426fda32c9fccd8e831d0901a86bfff3c3e6f7a60336d6dde149f756c4",
-      "size": 1145496
-    },
-    "rootfs": {
-      "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/rootfs.imgz",
-      "sha256": "f80c2b1e2433c3036aa745da2a5935cf5dd61b65b17bbeabae87b49bd68a12ef",
-      "size": 427974567
-    }
-  },
   "app": {
     "versionCode": 601,
     "versionName": "6.0.1",

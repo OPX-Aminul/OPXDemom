@@ -115,7 +115,8 @@ public class SlideQemuInstall extends Fragment {
         logRecycler.setVisibility(View.VISIBLE);
         setStatus(StatusKind.RUNNING, "Rootless engine", "Starting...");
         log(LogLevel.INFO, "Stryker " + BuildConfig.VERSION_NAME + " · build " + BuildConfig.VERSION_CODE);
-        log(LogLevel.INFO, "Engine: rootless (QEMU aarch64)");
+        log(LogLevel.INFO, "Engine: rootless (QEMU "
+                + (com.zalexdev.stryker.utils.Core.isArmV7() ? "arm" : "aarch64") + ")");
 
         runOnUi(() -> {
             downloadBlock.setVisibility(View.VISIBLE);

@@ -2,6 +2,8 @@ package com.zalexdev.stryker.engine;
 
 import android.content.Context;
 
+import com.zalexdev.stryker.utils.Core;
+
 import java.io.File;
 
 public final class RootlessPaths {
@@ -12,12 +14,24 @@ public final class RootlessPaths {
         return new File(c.getFilesDir(), "rootless");
     }
 
-    public static File qemuBin(Context c)   { return new File(base(c), "qemu-system-aarch64"); }
-    public static File libslirp(Context c)  { return new File(base(c), "libslirp.so"); }
-    public static File kernel(Context c)    { return new File(base(c), "Image"); }
-    public static File initrd(Context c)    { return new File(base(c), "initrd.img"); }
-    public static File rootfs(Context c)    { return new File(base(c), "rootfs.img"); }
-    public static File rootfsGz(Context c)  { return new File(base(c), "rootfs.img.gz"); }
+    public static File qemuBin(Context c)   {
+        return new File(base(c), Core.isArmV7() ? "qemu-system-arm" : "qemu-system-aarch64");
+    }
+    public static File libslirp(Context c)  {
+        return new File(base(c), Core.isArmV7() ? "libslirp-arm.so" : "libslirp.so");
+    }
+    public static File kernel(Context c)    {
+        return new File(base(c), Core.isArmV7() ? "Image-armv7" : "Image");
+    }
+    public static File initrd(Context c)    {
+        return new File(base(c), Core.isArmV7() ? "initrd-armv7.img" : "initrd.img");
+    }
+    public static File rootfs(Context c)    {
+        return new File(base(c), Core.isArmV7() ? "rootfs-armv7.img" : "rootfs.img");
+    }
+    public static File rootfsGz(Context c)  {
+        return new File(base(c), Core.isArmV7() ? "rootfs-armv7.img.gz" : "rootfs.img.gz");
+    }
 
     public static File qmpSock(Context c)   { return new File(base(c), "qmp.sock"); }
     public static File serialSock(Context c){ return new File(base(c), "serial.sock"); }

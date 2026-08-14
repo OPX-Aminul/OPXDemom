@@ -47,7 +47,7 @@ public enum EngineType {
     public static boolean rootlessSupported(Context context) {
         if (Build.SUPPORTED_ABIS == null) return false;
         for (String abi : Build.SUPPORTED_ABIS) {
-            if ("arm64-v8a".equals(abi)) return true;
+            if ("arm64-v8a".equals(abi) || "armeabi-v7a".equals(abi)) return true;
         }
         return false;
     }

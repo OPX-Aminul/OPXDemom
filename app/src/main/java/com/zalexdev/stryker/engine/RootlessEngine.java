@@ -935,14 +935,17 @@ public final class RootlessEngine {
         a.add(RootlessPaths.qemuBin(app).getAbsolutePath());
 
         a.add("-nodefaults");
-        a.add("-M"); a.add("virt,gic-version=3");
-
+        if (com.zalexdev.stryker.utils.Core.isArmV7()) {
+            a.add("-M"); a.add("virt");
+        } else {
+            a.add("-M"); a.add("virt,gic-version=3");
+        }
         File kvm = new File("/dev/kvm");
-        if (kvm.exists() && kvm.canWrite()) {
+        if (!com.zalexdev.stryker.utils.Core.isArmV7() && kvm.exists() && kvm.canWrite()) {
             a.add("-cpu"); a.add("host");
             a.add("-accel"); a.add("kvm");
         } else {
-            a.add("-cpu"); a.add(cpuModel);
+            a.add("-cpu"); a.add(com.zalexdev.stryker.utils.Core.isArmV7() ? "cortex-a15" : cpuModel);
             a.add("-accel"); a.add("tcg,thread=" + (mttcg ? "multi" : "single") + ",tb-size=" + tbSize);
         }
         a.add("-smp"); a.add(cpus + ",sockets=1,cores=" + cpus + ",threads=1");

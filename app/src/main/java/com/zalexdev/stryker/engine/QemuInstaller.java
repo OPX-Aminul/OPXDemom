@@ -5,6 +5,7 @@ import android.content.res.AssetManager;
 import android.util.Log;
 
 import com.zalexdev.stryker.ota.QemuDownloader;
+import com.zalexdev.stryker.utils.Core;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -40,13 +41,16 @@ public final class QemuInstaller {
     private QemuInstaller() {}
 
     private static String rootfsAssetName(Context c) {
+        boolean armV7 = com.zalexdev.stryker.utils.Core.isArmV7();
+        String wantImgz = armV7 ? "rootfs-armv7.imgz" : "rootfs.imgz";
+        String wantGz = armV7 ? "rootfs-armv7.img.gz" : "rootfs.img.gz";
         try {
             String[] files = c.getAssets().list(ASSET_DIR);
             if (files == null) return null;
             String imgz = null, gz = null, raw = null;
             for (String f : files) {
-                if (f.equals("rootfs.imgz")) imgz = f;
-                else if (f.equals("rootfs.img.gz")) gz = f;
+                if (f.equals(wantImgz)) imgz = f;
+                else if (f.equals(wantGz)) gz = f;
                 else if (f.equals("rootfs.img")) raw = f;
             }
             if (imgz != null) return imgz;
@@ -62,15 +66,17 @@ public final class QemuInstaller {
     }
 
     public static boolean assetsPresent(Context c) {
+        boolean armV7 = com.zalexdev.stryker.utils.Core.isArmV7();
+        String qemuName = armV7 ? "qemu-system-arm" : "qemu-system-aarch64";
         try {
             String[] files = c.getAssets().list(ASSET_DIR);
             if (files == null) return false;
             boolean q = false, k = false, l = false, ird = false;
             for (String f : files) {
-                if (f.equals("qemu-system-aarch64")) q = true;
-                else if (f.equals("Image")) k = true;
-                else if (f.equals("libslirp.so")) l = true;
-                else if (f.equals("initrd.img")) ird = true;
+                if (f.equals(qemuName)) q = true;
+                else if (f.equals(armV7 ? "Image-armv7" : "Image")) k = true;
+                else if (f.equals(libName)) l = true;
+                else if (f.equals(armV7 ? "initrd-armv7.img" : "initrd.img")) ird = true;
             }
             return q && k && l && ird && rootfsAssetName(c) != null;
         } catch (IOException e) {
@@ -97,7 +103,9 @@ public final class QemuInstaller {
             }
 
             stage(p, Stage.EXTRACTING_QEMU);
-            copyAsset(am, ASSET_DIR + "/qemu-system-aarch64", RootlessPaths.qemuBin(context), p, "QEMU");
+            String qemuAsset = com.zalexdev.stryker.utils.Core.isArmV7()
+                    ? ASSET_DIR + "/qemu-system-arm" : ASSET_DIR + "/qemu-system-aarch64";
+            copyAsset(am, qemuAsset, RootlessPaths.qemuBin(context), p, "QEMU");
             RootlessPaths.qemuBin(context).setExecutable(true, false);
 
             stage(p, Stage.EXTRACTING_KERNEL);

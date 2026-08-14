@@ -2,6 +2,8 @@ package com.zalexdev.stryker.ota;
 
 import android.content.Context;
 
+import com.zalexdev.stryker.utils.Core;
+
 public final class QemuDownloader {
 
     private QemuDownloader() {}
@@ -24,10 +26,26 @@ public final class QemuDownloader {
     }
 
     public static Bundle resolve(Context context) {
+        boolean armV7 = com.zalexdev.stryker.utils.Core.isArmV7();
         RemoteManifest manifest = ManifestService.fetch(context);
-        if (manifest != null && manifest.rootless != null && manifest.rootless.isComplete()) {
-            RemoteManifest.RootlessAssets r = manifest.rootless;
+        RemoteManifest.RootlessAssets r = null;
+        if (manifest != null) {
+            if (armV7 && manifest.rootless32 != null && manifest.rootless32.isComplete()) {
+                r = manifest.rootless32;
+            } else if (manifest.rootless != null && manifest.rootless.isComplete()) {
+                r = manifest.rootless;
+            }
+        }
+        if (r != null) {
             return new Bundle(r.qemu, r.kernel, r.initrd, r.libslirp, r.rootfs);
+        }
+        if (armV7) {
+            return new Bundle(
+                    new RemoteManifest.Asset(StrykerEndpoints.FALLBACK_ROOTLESS_QEMU_32, "", 0),
+                    new RemoteManifest.Asset(StrykerEndpoints.FALLBACK_ROOTLESS_KERNEL_32, "", 0),
+                    new RemoteManifest.Asset(StrykerEndpoints.FALLBACK_ROOTLESS_INITRD_32, "", 0),
+                    new RemoteManifest.Asset(StrykerEndpoints.FALLBACK_ROOTLESS_LIBSLIRP_32, "", 0),
+                    new RemoteManifest.Asset(StrykerEndpoints.FALLBACK_ROOTLESS_ROOTFS_32, "", 0));
         }
         return new Bundle(
                 new RemoteManifest.Asset(StrykerEndpoints.FALLBACK_ROOTLESS_QEMU, "", 0),
