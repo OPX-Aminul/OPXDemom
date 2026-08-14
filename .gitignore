@@ -27,6 +27,8 @@ keystore.properties
 *.key
 google-services.json
 firebase.json
+# Exception: the shared release keystore is intentionally committed (see README → Release signing).
+!/keystore/release.p12
 
 # Generated lint / mapping
 /app/lint-results*

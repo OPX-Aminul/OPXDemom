@@ -72,16 +72,21 @@ Output APKs land in `app/build/outputs/apk/`.
 
 ### Release signing
 
-Configure these in `~/.gradle/gradle.properties` (or pass via `-P` / environment):
+Release builds are **always signed** with the committed keystore at `keystore/release.p12`
+(PKCS12, alias `opx`, password `OPX_Release_Keystore_2026`, defined in `gradle.properties`).
+No extra setup is needed to produce a signed release APK.
+
+> **Security note:** this keystore is committed to the repository, so anyone with access to
+> the repo can sign APKs with this identity. If you keep your fork public, replace it with
+> your own keystore and keep it private:
 
 ```properties
-STRYKER_RELEASE_STORE_FILE=/path/to/keystore.jks
+# Put in ~/.gradle/gradle.properties (or pass via -P / environment) to override:
+STRYKER_RELEASE_STORE_FILE=/path/to/your-keystore.p12
 STRYKER_RELEASE_STORE_PASSWORD=...
 STRYKER_RELEASE_KEY_ALIAS=...
 STRYKER_RELEASE_KEY_PASSWORD=...
 ```
-
-If the variables are not set, the release build is left unsigned so CI / contributors can still produce an APK.
 
 ---
 

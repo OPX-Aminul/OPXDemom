@@ -23,12 +23,11 @@ android {
     signingConfigs {
         release {
             def storeFilePath = project.findProperty('STRYKER_RELEASE_STORE_FILE') ?: System.getenv('STRYKER_RELEASE_STORE_FILE')
-            if (storeFilePath) {
-                storeFile file(storeFilePath)
-                storePassword project.findProperty('STRYKER_RELEASE_STORE_PASSWORD') ?: System.getenv('STRYKER_RELEASE_STORE_PASSWORD')
-                keyAlias project.findProperty('STRYKER_RELEASE_KEY_ALIAS') ?: System.getenv('STRYKER_RELEASE_KEY_ALIAS')
-                keyPassword project.findProperty('STRYKER_RELEASE_KEY_PASSWORD') ?: System.getenv('STRYKER_RELEASE_KEY_PASSWORD')
-            }
+            storeFile file(storeFilePath ?: rootProject.file('keystore/release.p12'))
+            storeType 'PKCS12'
+            storePassword project.findProperty('STRYKER_RELEASE_STORE_PASSWORD') ?: System.getenv('STRYKER_RELEASE_STORE_PASSWORD')
+            keyAlias project.findProperty('STRYKER_RELEASE_KEY_ALIAS') ?: 'opx'
+            keyPassword project.findProperty('STRYKER_RELEASE_KEY_PASSWORD') ?: System.getenv('STRYKER_RELEASE_KEY_PASSWORD')
         }
     }
 
@@ -37,9 +36,7 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            if (project.findProperty('STRYKER_RELEASE_STORE_FILE') || System.getenv('STRYKER_RELEASE_STORE_FILE')) {
-                signingConfig signingConfigs.release
-            }
+            signingConfig signingConfigs.release
         }
 
         debug {
