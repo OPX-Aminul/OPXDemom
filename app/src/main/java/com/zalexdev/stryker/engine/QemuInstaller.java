@@ -75,7 +75,7 @@ public final class QemuInstaller {
             for (String f : files) {
                 if (f.equals(qemuName)) q = true;
                 else if (f.equals(armV7 ? "Image-armv7" : "Image")) k = true;
-                else if (f.equals(libName)) l = true;
+                else if (f.equals(armV7 ? "libslirp-arm.so" : "libslirp.so")) l = true;
                 else if (f.equals(armV7 ? "initrd-armv7.img" : "initrd.img")) ird = true;
             }
             return q && k && l && ird && rootfsAssetName(c) != null;
@@ -109,11 +109,14 @@ public final class QemuInstaller {
             RootlessPaths.qemuBin(context).setExecutable(true, false);
 
             stage(p, Stage.EXTRACTING_KERNEL);
-            copyAsset(am, ASSET_DIR + "/Image", RootlessPaths.kernel(context), p, "kernel");
-            copyAsset(am, ASSET_DIR + "/initrd.img", RootlessPaths.initrd(context), p, "initrd");
+            copyAsset(am, ASSET_DIR + (com.zalexdev.stryker.utils.Core.isArmV7()
+                    ? "/Image-armv7" : "/Image"), RootlessPaths.kernel(context), p, "kernel");
+            copyAsset(am, ASSET_DIR + (com.zalexdev.stryker.utils.Core.isArmV7()
+                    ? "/initrd-armv7.img" : "/initrd.img"), RootlessPaths.initrd(context), p, "initrd");
 
             stage(p, Stage.EXTRACTING_LIBS);
-            copyAsset(am, ASSET_DIR + "/libslirp.so", RootlessPaths.libslirp(context), p, "libslirp.so");
+            copyAsset(am, ASSET_DIR + (com.zalexdev.stryker.utils.Core.isArmV7()
+                    ? "/libslirp-arm.so" : "/libslirp.so"), RootlessPaths.libslirp(context), p, "libslirp.so");
 
             stage(p, Stage.DECOMPRESSING_ROOTFS);
             String rootfsAsset = rootfsAssetName(context);
