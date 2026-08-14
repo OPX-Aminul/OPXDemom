@@ -29,7 +29,7 @@ import java.util.List;
 public class AboutFragment extends Fragment {
 
     private static final String SITE_URL = "https://zalexdev.com";
-    private static final String GITHUB_URL = "https://github.com/mahmudabegum8859-design/OPXDemom";
+    private static final String GITHUB_URL = "https://github.com/OPX-Aminul/OPXDemom";
 
     private float entranceTranslation;
 

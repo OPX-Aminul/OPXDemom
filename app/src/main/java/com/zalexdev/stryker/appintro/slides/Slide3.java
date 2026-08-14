@@ -137,7 +137,7 @@ public class Slide3 extends Fragment {
         logRecycler.setVisibility(View.VISIBLE);
         resetStages();
         setStatus(StatusKind.RUNNING, "Stryker chroot", "Starting...");
-        log(LogLevel.INFO, "Architecture: arm64-v8a");
+        log(LogLevel.INFO, "Architecture: " + Core.primaryAbi());
         log(LogLevel.INFO, "Stryker " + BuildConfig.VERSION_NAME + " · build " + BuildConfig.VERSION_CODE);
         if (activity instanceof com.zalexdev.stryker.appintro.AppIntroActivity
                 && ((com.zalexdev.stryker.appintro.AppIntroActivity) activity).isMigration()) {

@@ -169,7 +169,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         TextView arch = navView.findViewById(R.id.drawer_arch_badge);
-        if (arch != null) arch.setText("arm64");
+        if (arch != null) {
+            String abi = Core.primaryAbi();
+            if ("arm64-v8a".equals(abi)) arch.setText("arm64");
+            else if ("armeabi-v7a".equals(abi)) arch.setText("armv7");
+            else arch.setText(abi);
+        }
         engineStatusView = navView;
         engineStatusDrawer = drawer;
         drawer.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {

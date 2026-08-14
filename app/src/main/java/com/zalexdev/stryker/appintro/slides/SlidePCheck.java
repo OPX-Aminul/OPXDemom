@@ -172,7 +172,7 @@ public class SlidePCheck extends Fragment {
     @SuppressLint("SetTextI18n")
     private void renderRows(boolean rootOk, boolean monFinal, boolean usbOk,
                             boolean manufactOk, boolean spaceOk, long freeGb) {
-        boolean archOk = Core.isArm64();
+        boolean archOk = Core.isSupportedArch();
         applyRow(rootOk, rootSub, rootBadge,
                 "Superuser shell available",
                 "su not detected — install Magisk or another root manager");
@@ -183,23 +183,18 @@ public class SlidePCheck extends Fragment {
                 "USB host mode supported",
                 "External adapters won't be usable on this device");
         applyRow(manufactOk && archOk, manufacture, manufactureBadge,
-                Build.MANUFACTURER + " · arm64-v8a — no known quirks",
+                Build.MANUFACTURER + " · " + Core.primaryAbi() + " — no known quirks",
                 archOk
                         ? "Samsung stock ROM detected — wifi/local scan may misbehave"
-                        : Build.MANUFACTURER + " · " + primaryAbi()
-                                + " — Stryker is arm64-v8a only and will not run here");
+                        : Build.MANUFACTURER + " · " + Core.primaryAbi()
+                                + " — Stryker is ARM64/ARMv7 only and will not run here");
         applyRow(spaceOk, spaceSub, spaceBadge,
                 freeGb + " GB free on /data",
                 "Only " + freeGb + " GB free — Debian chroot install needs ~" + REQUIRED_FREE_GB + " GB");
         if (!archOk) {
-            disclaimer.setText("This device reports " + primaryAbi()
-                    + ". Stryker ships arm64-v8a binaries only — the chroot toolset cannot be installed here.");
+            disclaimer.setText("This device reports " + Core.primaryAbi()
+                    + ". Stryker ships ARM64/ARMv7 binaries only — the chroot toolset cannot be installed here.");
         }
-    }
-
-    private static String primaryAbi() {
-        if (Build.SUPPORTED_ABIS == null || Build.SUPPORTED_ABIS.length == 0) return "an unknown CPU";
-        return Build.SUPPORTED_ABIS[0];
     }
 
     @SuppressLint("SetTextI18n")

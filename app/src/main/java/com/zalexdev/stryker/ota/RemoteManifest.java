@@ -89,6 +89,7 @@ public final class RemoteManifest {
     public int manifestVersion = 1;
     public String coreVersion = "";
     public Asset chroot64;
+    public Asset chroot32;
     public RootlessAssets rootless;
     public AppUpdate app;
     public final List<News> news = new ArrayList<>();
@@ -112,6 +113,7 @@ public final class RemoteManifest {
                        >= debian.optInt("min_version_code", 0)) {
                 manifest.coreVersion = debian.optString("version", core.optString("version", ""));
                 manifest.chroot64 = asset(debian.optJSONObject("chroot64"));
+                manifest.chroot32 = asset(debian.optJSONObject("chroot32"));
             } else {
                 manifest.coreVersion = "";
                 manifest.chroot64 = null;

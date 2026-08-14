@@ -472,7 +472,11 @@ public class InstallService extends Service {
         ArrayList<String> c = new ArrayList<>();
         c.add("mkdir -p /tmp /usr/bin");
         c.add("echo ×Detecting architecture");
-        c.add("NARCH=linux_arm64; echo \"×Target $NARCH\"");
+        c.add("NARCH=linux_arm64; case \"$(uname -m)\" in "
+                + "aarch64|arm64) NARCH=linux_arm64;; "
+                + "armv7*) NARCH=linux_armv7;; "
+                + "x86_64|amd64) NARCH=linux_amd64;; "
+                + "i?86) NARCH=linux_386;; esac; echo \"×Target $NARCH\"");
         c.add("echo ×Resolving latest nuclei release");
         c.add("NURL=$(curl -fsSL https://api.github.com/repos/projectdiscovery/nuclei/releases/latest "
                 + "| tr ',' '\\n' | grep browser_download_url | grep \"$NARCH\" | grep '\\.zip' "

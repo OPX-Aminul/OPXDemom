@@ -455,6 +455,23 @@ public class Core {
         }
         return false;
     }
+
+    public static boolean isArmV7() {
+        if (Build.SUPPORTED_ABIS == null) return false;
+        for (String abi : Build.SUPPORTED_ABIS) {
+            if ("armeabi-v7a".equals(abi)) return true;
+        }
+        return false;
+    }
+
+    public static boolean isSupportedArch() {
+        return isArm64() || isArmV7();
+    }
+
+    public static String primaryAbi() {
+        if (Build.SUPPORTED_ABIS == null || Build.SUPPORTED_ABIS.length == 0) return "unknown";
+        return Build.SUPPORTED_ABIS[0];
+    }
     public void scale(View v, Float x){
         v.animate().scaleY(x);
         v.animate().scaleX(x);

@@ -869,11 +869,11 @@ Storage is only consumed as the guest writes, and space freed inside the VM is r
     <string name="nuclei_btn_install">Install</string>
     <string name="nuclei_btn_retry">Retry</string>
     <string name="nuclei_btn_open">Open scanner</string>
-    <string name="nuclei_install_warn">Pulls the latest signed nuclei release for arm64 (~20 MB). Keep the screen awake until verify succeeds.</string>
+    <string name="nuclei_install_warn">Pulls the latest signed nuclei release for your architecture (~20 MB). Keep the screen awake until verify succeeds.</string>
     <string name="nuclei_install_stage_prepare">Prepare install environment</string>
     <string name="nuclei_install_stage_refresh">Refresh apt index</string>
     <string name="nuclei_install_stage_install_go">Resolve latest release</string>
-    <string name="nuclei_install_stage_go_build">Download arm64 binary</string>
+    <string name="nuclei_install_stage_go_build">Download binary for your architecture</string>
     <string name="nuclei_install_stage_deploy">Deploy nuclei to /usr/bin</string>
     <string name="nuclei_install_stage_templates">Fetch template library (takes minutes)</string>
 
@@ -1015,7 +1015,7 @@ Storage is only consumed as the guest writes, and space freed inside the VM is r
     <string name="about_link_site_label">Project site</string>
     <string name="about_link_site_url" translatable="false">zalexdev.com</string>
     <string name="about_link_github_label">Source code</string>
-    <string name="about_link_github_url" translatable="false">github.com/mahmudabegum8859-design/OPXDemom</string>
+    <string name="about_link_github_url" translatable="false">github.com/OPX-Aminul/OPXDemom</string>
     <string name="about_oss_licenses_label">Open-source licenses</string>
     <string name="license_subtitle">Stryker is built on these open-source projects. Tap any entry to open its source.</string>
     <string name="about_footer">StrykerOSS — free software (GNU GPL v3.0) — authorized testing only</string>
