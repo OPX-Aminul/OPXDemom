@@ -58,11 +58,11 @@
         "size": 427974567
       },
       "arm32": {
-        "note": "32-bit ARM (armeabi-v7a) rootless. Kernel/initrd/rootfs are published; qemu-system-arm and libslirp-arm.so are still pending a cross-compile, so armv7 rootless installs will fail at the QEMU download until those two assets exist.",
+        "note": "32-bit ARM (armeabi-v7a) rootless.",
         "qemu": {
           "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/qemu-system-arm",
-          "sha256": "",
-          "size": 0
+          "sha256": "46a889d3a747b5658564b03a08042dfe77068741eec30bd5612863b62d9d3c5b",
+          "size": 75426020
         },
         "kernel": {
           "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/Image-armv7",
@@ -76,8 +76,8 @@
         },
         "libslirp": {
           "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/libslirp-arm.so",
-          "sha256": "",
-          "size": 0
+          "sha256": "816765bb448a6ce792503d0caecf2c75a4a41597799f77babcc124137cb5124b",
+          "size": 2690984
         },
         "rootfs": {
           "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/rootfs-armv7.imgz",
