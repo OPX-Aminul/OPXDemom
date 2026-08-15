@@ -117,6 +117,8 @@ public final class QemuInstaller {
             copyAsset(am, initrdAsset, RootlessPaths.initrd(context), p, "initrd");
 
             stage(p, Stage.EXTRACTING_LIBS);
+            // The qemu binary links against "libslirp.so" on every ABI, so always store the
+            // (armv7: libslirp-arm.so) asset under the linked name.
             String libslirpAsset = com.zalexdev.stryker.utils.Core.isArmV7()
                     ? ASSET_DIR + "/libslirp-arm.so" : ASSET_DIR + "/libslirp.so";
             copyAsset(am, libslirpAsset, RootlessPaths.libslirp(context), p, "libslirp.so");

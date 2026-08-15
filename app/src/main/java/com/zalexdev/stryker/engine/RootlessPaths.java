@@ -18,7 +18,10 @@ public final class RootlessPaths {
         return new File(base(c), Core.isArmV7() ? "qemu-system-arm" : "qemu-system-aarch64");
     }
     public static File libslirp(Context c)  {
-        return new File(base(c), Core.isArmV7() ? "libslirp-arm.so" : "libslirp.so");
+        // The qemu binary links against "libslirp.so" (its DT_NEEDED entry) regardless of ABI,
+        // so the file must always be named libslirp.so. On armv7 the download asset is called
+        // libslirp-arm.so but it is stored under the linked name, matching the 64-bit layout.
+        return new File(base(c), "libslirp.so");
     }
     public static File kernel(Context c)    {
         return new File(base(c), Core.isArmV7() ? "Image-armv7" : "Image");

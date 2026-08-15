@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.graphics.PorterDuff;
+import android.Manifest;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -16,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -48,6 +51,72 @@ public class Slide2 extends Fragment {
 
     private boolean rootChecked = false;
     private boolean rootGranted = false;
+
+    private static final int REQ_PERMS = 7001;
+    private final java.util.ArrayList<String> pending = new java.util.ArrayList<>();
+
+    // Build the full runtime-permission list the app needs, version-aware so the same
+    // flow works on Android 7 (N) through 17. Only permissions declared in the manifest
+    // are requested; special (settings-intent) permissions like MANAGE_EXTERNAL_STORAGE
+    // are handled separately in finishGrantFlow().
+    private java.util.ArrayList<String> buildPermissionList() {
+        java.util.ArrayList<String> list = new java.util.ArrayList<>();
+        // Location — every version.
+        list.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        list.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+        // Microphone.
+        list.add(Manifest.permission.RECORD_AUDIO);
+        // Bluetooth — legacy pair below 12 (S), new runtime pair on 12+.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            list.add(Manifest.permission.BLUETOOTH_SCAN);
+            list.add(Manifest.permission.BLUETOOTH_CONNECT);
+        } else {
+            list.add(Manifest.permission.BLUETOOTH);
+            list.add(Manifest.permission.BLUETOOTH_ADMIN);
+        }
+        // Storage + notifications.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            list.add(Manifest.permission.READ_MEDIA_IMAGES);
+            list.add(Manifest.permission.READ_MEDIA_VIDEO);
+            list.add(Manifest.permission.READ_MEDIA_AUDIO);
+            list.add(Manifest.permission.POST_NOTIFICATIONS);
+        } else {
+            list.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+            list.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        return list;
+    }
+
+    // Ask for every missing runtime permission one dialog at a time.
+    private void startPermissionFlow() {
+        java.util.ArrayList<String> all = buildPermissionList();
+        pending.clear();
+        for (String p : all) {
+            if (context.checkSelfPermission(p) != PackageManager.PERMISSION_GRANTED) {
+                pending.add(p);
+            }
+        }
+        requestNextPermission();
+    }
+
+    private void requestNextPermission() {
+        if (!pending.isEmpty()) {
+            String p = pending.remove(0);
+            requestPermissions(new String[]{p}, REQ_PERMS);
+        } else {
+            finishGrantFlow();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQ_PERMS) {
+            requestNextPermission();
+        }
+    }
 
     @SuppressLint({"SdCardPath", "SetTextI18n"})
     @Nullable
@@ -89,6 +158,15 @@ public class Slide2 extends Fragment {
         setPip(storageSpinner, storageStatus, true, false);
         setPip(batterySpinner, batteryStatus, true, false);
 
+        // Walk the full runtime-permission list (one dialog at a time), then continue
+        // with the install flow once every runtime permission has been answered.
+        startPermissionFlow();
+    }
+
+    // Called after the last runtime permission dialog is answered. Handles the
+    // settings-intent permissions (all-files access on Android 11+) and then runs the
+    // existing root / rootless provisioning flow.
+    private void finishGrantFlow() {
         if (core.isRootless()) {
             core.requestAllFilesAccess(activity);
         }
