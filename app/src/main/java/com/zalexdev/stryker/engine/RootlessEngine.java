@@ -936,7 +936,7 @@ public final class RootlessEngine {
 
         a.add("-nodefaults");
         if (com.zalexdev.stryker.utils.Core.isArmV7()) {
-            a.add("-M"); a.add("virt");
+            a.add("-M"); a.add("virt,highmem=off");
         } else {
             a.add("-M"); a.add("virt,gic-version=3");
         }
@@ -1014,8 +1014,11 @@ public final class RootlessEngine {
     }
 
     private static String kernelCmdline(boolean fastBoot) {
-        StringBuilder sb = new StringBuilder("root=/dev/vda rw rootwait rootflags=noatime "
-                + "console=ttyAMA0 loglevel=4 net.ifnames=0 mitigations=off stryker.rootless=1");
+        StringBuilder sb = new StringBuilder("root=/dev/vda rw rootwait ");
+        if (!com.zalexdev.stryker.utils.Core.isArmV7()) {
+            sb.append("rootflags=noatime ");
+        }
+        sb.append("console=ttyAMA0 loglevel=4 net.ifnames=0 mitigations=off stryker.rootless=1");
         if (fastBoot) {
             sb.append(" init_on_alloc=0 init_on_free=0 audit=0 nokaslr")
               .append(" rcupdate.rcu_expedited=1 rcupdate.rcu_normal_after_boot=1")
