@@ -87,13 +87,13 @@
       }
     },
   "app": {
-    "versionCode": 601,
-    "versionName": "6.0.1",
-    "url": "https://github.com/zalexdev/strykerapp/releases/download/6.0.1/StrykerOSS-6.0.1.apk",
-    "sha256": "d57a4c36d8efb24ba51f4ec4d6459097061dea93a383fef02a2dd89368573752",
-    "size": 20892858,
+    "versionCode": 602,
+    "versionName": "1.0.1",
+    "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/v1.0.1/app-release.apk",
+    "sha256": "99f249777c6d167c8ed5a103ab392e5cf84062ede4a53accd3092833b1e2c929",
+    "size": 20911023,
     "mandatory": false,
-    "changelog": "Hotfix over 6.0.\n\nFixed\n- Data loss when upgrading from installs older than 4.5R: the check before deleting the old chroot could miss a still-attached bind and delete through it into internal storage. Detection now covers every layout, and no recursive delete runs while anything is mounted.\n- The install no longer continues after a failed cleanup.\n- Devices without root reported \"no usable tar\" instead of naming the real cause. The pre-check now offers the rootless engine rather than starting an install that cannot finish.\n- Captured handshakes were not moved into the captured folder.\n- Wordlists were not listed in the pickers.\n- The terminal could crash on launch with \"Cannot create component config directory\"."
+    "changelog": "v1.0.1\n\nFixed\n- 32-bit (armeabi-v7a) rootless boot: qemu-system-arm links against libslirp.so, but the armv7 asset was stored as libslirp-arm.so. It is now stored under the linked name, matching 64-bit — fixes \"CANNOT LINK EXECUTABLE libslirp.so not found\".\n\nAdded\n- Intro \"Grant Permission\" now walks the full runtime-permission list one dialog at a time (Android 7-17 aware): location, bluetooth (legacy / 12+), microphone, storage (READ_MEDIA_* on 13+), notifications (13+), all-files access on 11+."
   },
   "news": [
     {
