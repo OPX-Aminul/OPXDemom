@@ -18,8 +18,29 @@ import java.util.concurrent.Executors;
 public final class RootlessEngine {
 
     private static final String TAG = "RootlessEngine";
-    private static final int BOOT_TIMEOUT_MS = 150_000;
+
+    private static final int BOOT_TIMEOUT_TCG_MS  = 600_000;
+    private static final int BOOT_TIMEOUT_KVM_MS  = 150_000;
+    private static final int BOOT_TIMEOUT_FLOOR_MS = 60_000;
     private static final String PROMPT_MARK = "__STRYKER_ID__";
+
+    private int bootTimeoutMs() {
+        if (VmSpecs.kvmAvailable()) return BOOT_TIMEOUT_KVM_MS;
+        if (com.zalexdev.stryker.utils.Core.isArmV7()) {
+            // 32-bit QEMU TCG on low-end phones is extremely slow (no KVM is ever
+            // available there), so give the guest a lot of room before giving up.
+            long ram = VmSpecs.deviceRamMb(app);
+            int cpus = VmSpecs.deviceCores();
+            if (ram >= 6000 && cpus >= 8) return 480_000;
+            return 900_000;
+        }
+        long fast = VmSpecs.deviceRamMb(app);
+        int cpus = VmSpecs.deviceCores();
+        long base = BOOT_TIMEOUT_TCG_MS;
+        if (fast >= 6000 && cpus >= 6) base = 240_000;
+        else if (fast >= 3000 && cpus >= 4) base = 360_000;
+        return (int) Math.max(BOOT_TIMEOUT_FLOOR_MS, base);
+    }
 
     private static volatile RootlessEngine instance;
 
@@ -168,7 +189,7 @@ public final class RootlessEngine {
 
             new Thread(() -> pumpBootLog(proc, listener), "stryker-qemu-log").start();
 
-            long deadline = System.currentTimeMillis() + BOOT_TIMEOUT_MS;
+            long deadline = System.currentTimeMillis() + bootTimeoutMs();
             boolean consoleTried = false;
             while (System.currentTimeMillis() < deadline) {
                 if (stopRequested) return "stopped";
@@ -191,7 +212,7 @@ public final class RootlessEngine {
                 }
                 sleep(1000);
             }
-            return "Boot timed out after " + (BOOT_TIMEOUT_MS / 1000) + "s"
+            return "Boot timed out after " + (bootTimeoutMs() / 1000) + "s"
                     + (consoleTried ? " — the guest booted but stryker-agentd never came up" : "");
         } catch (Exception e) {
             Log.e(TAG, "start failed", e);
@@ -712,7 +733,7 @@ public final class RootlessEngine {
            .append("sleep 3; ss -ltn 2>/dev/null | grep -q ':1050' && echo __AGENT_UP__ || echo __AGENT_DOWN__");
 
         boolean up = false;
-        for (String l : GuestConsole.run(cmd.toString(), sock, 180_000)) {
+        for (String l : GuestConsole.run(cmd.toString(), sock, 300_000)) {
             if (l != null && l.contains("__AGENT_UP__")) up = true;
         }
         if (staged != null) {

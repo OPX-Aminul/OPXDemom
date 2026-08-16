@@ -81,8 +81,8 @@
         },
         "rootfs": {
           "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/rootfs-armv7.imgz",
-          "sha256": "139248668ec825d63803cbdff67b9e1d76b421da311a3faf2c4f9da089ae96d2",
-          "size": 177396380
+          "sha256": "9231b78d3ff72d18ada9ed8ed356ed5aca33ed4eb37339af6b6d7a56cd8e39ce",
+          "size": 177997891
         }
       }
     },

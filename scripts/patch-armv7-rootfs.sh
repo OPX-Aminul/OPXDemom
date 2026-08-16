@@ -128,6 +128,35 @@ ExecStart=
 ExecStart=-/sbin/agetty --autologin root --keep-baud 115200,38400,9600 %I vt220
 DROPIN
 
+echo "==> trimming boot-time work (faster boot on slow emulated CPUs)"
+# On low-end phones QEMU TCG is very slow, so shave the guest's boot work:
+# disable services that add time but are not needed for the Stryker session.
+mkdir -p "$MNT/etc/systemd/system"
+DISABLE_UNITS="
+    apt-daily.service apt-daily.timer apt-daily-upgrade.service apt-daily-upgrade.timer
+    man-db.timer mlocate.timer e2scrub_reap.service
+    systemd-networkd-wait-online.service
+    systemd-timesyncd.service
+    remote-fs.target
+    getty@tty1.service getty@tty2.service getty@tty3.service getty@tty4.service getty@tty5.service getty@tty6.service
+    bluetooth.service
+"
+for u in $DISABLE_UNITS; do
+    if [ -e "$MNT/usr/lib/systemd/system/$u" ] || [ -e "$MNT/lib/systemd/system/$u" ] \
+       || [ -e "$MNT/etc/systemd/system/$u" ]; then
+        ln -sf /dev/null "$MNT/etc/systemd/system/$u" 2>/dev/null || true
+    fi
+done
+# systemd-networkd-wait-online can block network-online.target; we don't need it.
+rm -f "$MNT/etc/systemd/system/network-online.target.wants/systemd-networkd-wait-online.service" \
+      2>/dev/null || true
+# Quiet the console further to reduce serial churn under emulation.
+if [ -f "$MNT/etc/systemd/system.conf" ]; then
+    grep -q '^#LogLevel' "$MNT/etc/systemd/system.conf" \
+        && sed -i 's/^#LogLevel=.*/LogLevel=warning/' "$MNT/etc/systemd/system.conf" || \
+        echo 'LogLevel=warning' >> "$MNT/etc/systemd/system.conf"
+fi
+
 sync
 umount "$MNT"
 losetup -d "$LOOP"
