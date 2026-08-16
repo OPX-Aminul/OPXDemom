@@ -1,12 +1,14 @@
 package com.zalexdev.stryker.appintro.slides;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.graphics.PorterDuff;
-import android.Manifest;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,6 +20,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -52,15 +56,25 @@ public class Slide2 extends Fragment {
     private boolean rootChecked = false;
     private boolean rootGranted = false;
 
-    private static final int REQ_PERMS = 7001;
-    private final java.util.ArrayList<String> pending = new java.util.ArrayList<>();
+    private static final int REQ_RUNTIME = 7001;
+
+    private enum StepKind { RUNTIME, ALL_FILES, BATTERY }
+    private static final class Step {
+        final StepKind kind;
+        final String perm;
+        Step(StepKind k, String p) { kind = k; perm = p; }
+    }
+
+    private final ArrayList<Step> queue = new ArrayList<>();
+    private ActivityResultLauncher<Intent> allFilesLauncher;
+    private ActivityResultLauncher<Intent> batteryLauncher;
 
     // Build the full runtime-permission list the app needs, version-aware so the same
-    // flow works on Android 7 (N) through 17. Only permissions declared in the manifest
-    // are requested; special (settings-intent) permissions like MANAGE_EXTERNAL_STORAGE
-    // are handled separately in finishGrantFlow().
-    private java.util.ArrayList<String> buildPermissionList() {
-        java.util.ArrayList<String> list = new java.util.ArrayList<>();
+    // flow works on Android 8 (O) through 16. MANAGE_EXTERNAL_STORAGE (all-files access)
+    // and the battery-optimization whitelist are special settings-intent permissions and
+    // are added as separate steps in tryGrant(), not here.
+    private ArrayList<String> buildPermissionList() {
+        ArrayList<String> list = new ArrayList<>();
         // Location — every version.
         list.add(Manifest.permission.ACCESS_FINE_LOCATION);
         list.add(Manifest.permission.ACCESS_COARSE_LOCATION);
@@ -87,37 +101,6 @@ public class Slide2 extends Fragment {
         return list;
     }
 
-    // Ask for every missing runtime permission one dialog at a time.
-    private void startPermissionFlow() {
-        java.util.ArrayList<String> all = buildPermissionList();
-        pending.clear();
-        for (String p : all) {
-            if (context.checkSelfPermission(p) != PackageManager.PERMISSION_GRANTED) {
-                pending.add(p);
-            }
-        }
-        requestNextPermission();
-    }
-
-    private void requestNextPermission() {
-        if (!pending.isEmpty()) {
-            String p = pending.remove(0);
-            requestPermissions(new String[]{p}, REQ_PERMS);
-        } else {
-            finishGrantFlow();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQ_PERMS) {
-            requestNextPermission();
-        }
-    }
-
     @SuppressLint({"SdCardPath", "SetTextI18n"})
     @Nullable
     @Override
@@ -142,6 +125,13 @@ public class Slide2 extends Fragment {
         storageSpinner = view.findViewById(R.id.storage_spinner);
         batterySpinner = view.findViewById(R.id.battery_spinner);
 
+        // Settings-intent permissions come back through these launchers; after each returns
+        // we continue down the queue.
+        allFilesLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), r -> processNextStep());
+        batteryLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), r -> processNextStep());
+
         refreshStatuses();
         button.setOnClickListener(view12 -> tryGrant());
         return view;
@@ -153,22 +143,120 @@ public class Slide2 extends Fragment {
         if (rootStatus != null && context != null && core != null) refreshStatuses();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQ_RUNTIME) {
+            processNextStep();
+        }
+    }
+
+    // Clicking the Grand Permission button walks the full list of permissions the app needs,
+    // one at a time: every missing runtime permission gets a dialog, then the special
+    // settings-intent permissions (all-files access on Android 11+, battery whitelist) are
+    // opened. We only advance once every permission is actually granted.
     private void tryGrant() {
         setPip(rootSpinner, rootStatus, true, false);
         setPip(storageSpinner, storageStatus, true, false);
         setPip(batterySpinner, batteryStatus, true, false);
+        button.setEnabled(false);
 
-        // Walk the full runtime-permission list (one dialog at a time), then continue
-        // with the install flow once every runtime permission has been answered.
-        startPermissionFlow();
+        queue.clear();
+        for (String p : buildPermissionList()) {
+            if (context.checkSelfPermission(p) != PackageManager.PERMISSION_GRANTED) {
+                queue.add(new Step(StepKind.RUNTIME, p));
+            }
+        }
+        // All-files access (MANAGE_EXTERNAL_STORAGE) — required for full storage access on
+        // Android 11 (R) and above, regardless of root or rootless.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            queue.add(new Step(StepKind.ALL_FILES, null));
+        }
+        // Battery-optimization whitelist so long scans survive in the background.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            queue.add(new Step(StepKind.BATTERY, null));
+        }
+        processNextStep();
     }
 
-    // Called after the last runtime permission dialog is answered. Handles the
-    // settings-intent permissions (all-files access on Android 11+) and then runs the
-    // existing root / rootless provisioning flow.
-    private void finishGrantFlow() {
+    private void processNextStep() {
+        if (queue.isEmpty()) {
+            onAllStepsDone();
+            return;
+        }
+        Step s = queue.remove(0);
+        switch (s.kind) {
+            case RUNTIME:
+                if (context.checkSelfPermission(s.perm) == PackageManager.PERMISSION_GRANTED) {
+                    processNextStep();
+                } else {
+                    requestPermissions(new String[]{s.perm}, REQ_RUNTIME);
+                }
+                break;
+            case ALL_FILES:
+                if (Environment.isExternalStorageManager()) {
+                    processNextStep();
+                } else {
+                    try {
+                        Intent i = new Intent(
+                                android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
+                                Uri.parse("package:" + context.getPackageName()));
+                        allFilesLauncher.launch(i);
+                    } catch (Throwable t) {
+                        processNextStep();
+                    }
+                }
+                break;
+            case BATTERY:
+                if (batteryWhitelisted()) {
+                    processNextStep();
+                } else {
+                    try {
+                        Intent i = new Intent(
+                                android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                                Uri.parse("package:" + context.getPackageName()));
+                        batteryLauncher.launch(i);
+                    } catch (Throwable t) {
+                        processNextStep();
+                    }
+                }
+                break;
+        }
+    }
+
+    // Every permission has been presented to the user. Verify the result, then either run the
+    // normal provisioning flow and advance, or leave the button on "try again" so the user
+    // can grant what they missed.
+    private void onAllStepsDone() {
+        uiSafe(() -> {
+            refreshStatuses();
+            boolean allOk = storageGranted() && batteryWhitelisted() && allRuntimeGranted();
+            if (allOk) {
+                runProvisioning();
+            } else {
+                title.setText(context.getResources().getString(R.string.permissions_is_not_granted));
+                button.setText(context.getResources().getString(R.string.permissions_check_again));
+                button.setIconResource(R.drawable.done);
+                button.setEnabled(true);
+            }
+        });
+    }
+
+    private boolean allRuntimeGranted() {
+        for (String p : buildPermissionList()) {
+            if (context.checkSelfPermission(p) != PackageManager.PERMISSION_GRANTED) return false;
+        }
+        return true;
+    }
+
+    // Runs the existing root / rootless provisioning once every permission is actually granted.
+    // (All-files access is no longer requested here — it is handled in the permission queue
+    // above for every engine type, not only rootless.)
+    private void runProvisioning() {
         if (core.isRootless()) {
-            core.requestAllFilesAccess(activity);
+            // all-files access already requested in the permission queue
         }
 
         new Thread(() -> {
@@ -238,6 +326,7 @@ public class Slide2 extends Fragment {
                     title.setText(context.getResources().getString(R.string.permissions_is_not_granted));
                     button.setText(context.getResources().getString(R.string.permissions_check_again));
                     button.setIconResource(R.drawable.done);
+                    button.setEnabled(true);
                 });
             }
         }).start();
