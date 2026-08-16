@@ -37,6 +37,7 @@ public final class VmSpecs {
     public static final int DEFAULT_CPUS = 4;
     public static final int DEFAULT_RAM_MB = 4096;
     public static final int MIN_RAM_MB = 512;
+    public static final int ARMV7_MAX_RAM_MB = 3072;
     public static final int MIN_DISK_GB = 8;
     public static final int FLOOR_DISK_GB = 1;
     public static final int MAX_DISK_GB = 1024;
@@ -93,9 +94,11 @@ public final class VmSpecs {
 
     public static int maxRamMb(Context ctx) {
         int dev = deviceRamMb(ctx);
-        if (dev <= 0) return 4096;
-        int reserve = Math.max(1024, dev / 4);
-        return Math.max(MIN_RAM_MB, dev - reserve);
+        int max = dev <= 0 ? 4096 : Math.max(MIN_RAM_MB, dev - Math.max(1024, dev / 4));
+        if (Core.isArmV7()) {
+            max = Math.min(max, ARMV7_MAX_RAM_MB);
+        }
+        return max;
     }
 
 

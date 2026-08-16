@@ -81,19 +81,19 @@
         },
         "rootfs": {
           "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/rootfs-armv7.imgz",
-          "sha256": "ac14f320e93322c74eb045eec6398f2acdf4a28339f3f141770dda15ac4a43e8",
-          "size": 177971586
+          "sha256": "139248668ec825d63803cbdff67b9e1d76b421da311a3faf2c4f9da089ae96d2",
+          "size": 177396380
         }
       }
     },
   "app": {
-    "versionCode": 602,
-    "versionName": "1.0.1",
-    "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/v1.0.1/app-release.apk",
-    "sha256": "99f249777c6d167c8ed5a103ab392e5cf84062ede4a53accd3092833b1e2c929",
+    "versionCode": 603,
+    "versionName": "1.0.2",
+    "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/v1.0.2/app-release.apk",
+    "sha256": "2f5b9e393c1304789a1fcdbf58ee7f632547796cbe953ec4739c976636eeced5",
     "size": 20911023,
     "mandatory": false,
-    "changelog": "v1.0.1\n\nFixed\n- 32-bit (armeabi-v7a) rootless boot: qemu-system-arm links against libslirp.so, but the armv7 asset was stored as libslirp-arm.so. It is now stored under the linked name, matching 64-bit — fixes \"CANNOT LINK EXECUTABLE libslirp.so not found\".\n\nAdded\n- Intro \"Grant Permission\" now walks the full runtime-permission list one dialog at a time (Android 7-17 aware): location, bluetooth (legacy / 12+), microphone, storage (READ_MEDIA_* on 13+), notifications (13+), all-files access on 11+."
+    "changelog": "v1.0.2\n\nFixed\n- 32-bit (armeabi-v7a) rootless boot: the published rootfs-armv7.imgz was a bare Debian rootfs missing the Stryker guest provisioning, so the VM stalled 90s on \"Expecting device dev-ttyAMA0.device\" and the agent never came up. The armv7 image is now provisioned like arm64: systemd-udevd (device units resolve), systemd-networkd DHCP (agent ports 1050-1052 reachable), stryker-agentd/stryker-ptyd + stryker-agent.service, and a serial-getty@ttyAMA0 autologin root console.\n- armv7 VM RAM is now capped at 3072 MB: -M virt,highmem=off cannot address more than 3 GB in 32-bit mode, so QEMU refused to launch on devices where the effective RAM exceeded the limit.\n\nAdded\n- scripts/patch-armv7-rootfs.sh: reproducible patch that provisions a bare armv7 rootfs from the repo's own stryker-guest-core.tar asset."
   },
   "news": [
     {
