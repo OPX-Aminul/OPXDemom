@@ -35,6 +35,25 @@ StrykerOSS bundles a curated set of network, wireless and web security tools int
 
 ---
 
+## Rootless mode & 32-bit devices
+
+StrykerOSS also runs **without root** by booting a QEMU VM (arm64 on 64-bit devices,
+armv7 on 32-bit devices) instead of a chroot. This is the default path on devices
+without Magisk/KernelSU.
+
+- **32-bit (armeabi-v7a) devices** are fully supported: the bundled `qemu-system-arm`
+  is cross-built with the **libusb / usbfs USB-host backend** (`--enable-libusb`), so
+  external USB Wi-Fi adapters attach and work exactly like on 64-bit devices.
+- USB adapter attach is handled identically across 32-bit and 64-bit builds (no
+  arch-specific branching), so a single code path drives `device_add usb-host` via QMP.
+- If a USB adapter is found but cannot be attached, the app offers an in-app **retry**
+  after you grant USB access — no reboot or reinstall required.
+
+> Low-end 32-bit phones (e.g. itel A663L, Android 13, no KVM) run the TCG-only QEMU
+> interpreter; expect slower VM boot, but all USB passthrough features work.
+
+---
+
 ## Requirements
 
 - **Rooted Android device** (Magisk or KernelSU recommended).
