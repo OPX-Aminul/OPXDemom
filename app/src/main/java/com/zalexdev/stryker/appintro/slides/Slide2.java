@@ -228,11 +228,14 @@ public class Slide2 extends Fragment {
 
     // Every permission has been presented to the user. Verify the result, then either run the
     // normal provisioning flow and advance, or leave the button on "try again" so the user
-    // can grant what they missed.
+    // can grant what they missed. The battery-optimization whitelist is requested but treated
+    // as best-effort: several OEMs (itel, Xiaomi, Realme, etc.) silently ignore the
+    // REQUEST_IGNORE_BATTERY_OPTIMIZATIONS intent, so gating advancement on it would trap the
+    // user on "try again" forever even when every real permission is granted.
     private void onAllStepsDone() {
         uiSafe(() -> {
             refreshStatuses();
-            boolean allOk = storageGranted() && batteryWhitelisted() && allRuntimeGranted();
+            boolean allOk = storageGranted() && allRuntimeGranted();
             if (allOk) {
                 runProvisioning();
             } else {
