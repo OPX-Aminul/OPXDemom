@@ -15,7 +15,7 @@ public final class RootlessPaths {
     }
 
     public static File qemuBin(Context c)   {
-        if (com.zalexdev.stryker.utils.Core.isXiaomi()) {
+        if (!Core.isArmV7() && com.zalexdev.stryker.utils.Core.isXiaomi()) {
             return new File(base(c), "qemu-system-aarch64-xiaomi");
         }
         return new File(base(c), Core.isArmV7() ? "qemu-system-arm" : "qemu-system-aarch64");

@@ -75,7 +75,8 @@ public final class RemoteManifest {
         }
 
         public Asset qemuForDevice() {
-            if (com.zalexdev.stryker.utils.Core.isXiaomi()
+            if (!com.zalexdev.stryker.utils.Core.isArmV7()
+                    && com.zalexdev.stryker.utils.Core.isXiaomi()
                     && qemuXiaomi != null && qemuXiaomi.isUsable()) {
                 return qemuXiaomi;
             }

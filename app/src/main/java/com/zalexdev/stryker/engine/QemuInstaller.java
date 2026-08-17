@@ -67,9 +67,8 @@ public final class QemuInstaller {
 
     public static boolean assetsPresent(Context c) {
         boolean armV7 = com.zalexdev.stryker.utils.Core.isArmV7();
-        boolean xiaomi = com.zalexdev.stryker.utils.Core.isXiaomi();
         String qemuName = armV7 ? "qemu-system-arm"
-                : (xiaomi ? "qemu-system-aarch64-xiaomi" : "qemu-system-aarch64");
+                : (com.zalexdev.stryker.utils.Core.isXiaomi() ? "qemu-system-aarch64-xiaomi" : "qemu-system-aarch64");
         try {
             String[] files = c.getAssets().list(ASSET_DIR);
             if (files == null) return false;

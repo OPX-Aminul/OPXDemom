@@ -30,10 +30,14 @@ public final class QemuDownloader {
         RemoteManifest manifest = ManifestService.fetch(context);
         RemoteManifest.RootlessAssets r = null;
         if (manifest != null) {
-            if (armV7 && manifest.rootless32 != null && manifest.rootless32.isComplete()) {
-                r = manifest.rootless32;
-            } else if (manifest.rootless != null && manifest.rootless.isComplete()) {
-                r = manifest.rootless;
+            if (armV7) {
+                if (manifest.rootless32 != null && manifest.rootless32.isComplete()) {
+                    r = manifest.rootless32;
+                }
+            } else {
+                if (manifest.rootless != null && manifest.rootless.isComplete()) {
+                    r = manifest.rootless;
+                }
             }
         }
         if (r != null) {
