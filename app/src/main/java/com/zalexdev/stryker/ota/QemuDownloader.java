@@ -14,17 +14,14 @@ public final class QemuDownloader {
         public final RemoteManifest.Asset initrd;
         public final RemoteManifest.Asset libslirp;
         public final RemoteManifest.Asset rootfs;
-        public final RemoteManifest.Asset libcxxShared;
 
         Bundle(RemoteManifest.Asset qemu, RemoteManifest.Asset kernel, RemoteManifest.Asset initrd,
-               RemoteManifest.Asset libslirp, RemoteManifest.Asset rootfs,
-               RemoteManifest.Asset libcxxShared) {
+               RemoteManifest.Asset libslirp, RemoteManifest.Asset rootfs) {
             this.qemu = qemu;
             this.kernel = kernel;
             this.initrd = initrd;
             this.libslirp = libslirp;
             this.rootfs = rootfs;
-            this.libcxxShared = libcxxShared;
         }
     }
 
@@ -41,9 +38,7 @@ public final class QemuDownloader {
         }
         if (r != null) {
             RemoteManifest.Asset qemu = r.qemuForDevice();
-            RemoteManifest.Asset libcxx = com.zalexdev.stryker.utils.Core.isXiaomi()
-                    ? r.libcxxShared : null;
-            return new Bundle(qemu, r.kernel, r.initrd, r.libslirp, r.rootfs, libcxx);
+            return new Bundle(qemu, r.kernel, r.initrd, r.libslirp, r.rootfs);
         }
         if (armV7) {
             return new Bundle(
@@ -51,15 +46,13 @@ public final class QemuDownloader {
                     new RemoteManifest.Asset(StrykerEndpoints.FALLBACK_ROOTLESS_KERNEL_32, "", 0),
                     new RemoteManifest.Asset(StrykerEndpoints.FALLBACK_ROOTLESS_INITRD_32, "", 0),
                     new RemoteManifest.Asset(StrykerEndpoints.FALLBACK_ROOTLESS_LIBSLIRP_32, "", 0),
-                    new RemoteManifest.Asset(StrykerEndpoints.FALLBACK_ROOTLESS_ROOTFS_32, "", 0),
-                    null);
+                    new RemoteManifest.Asset(StrykerEndpoints.FALLBACK_ROOTLESS_ROOTFS_32, "", 0));
         }
         return new Bundle(
                 new RemoteManifest.Asset(StrykerEndpoints.FALLBACK_ROOTLESS_QEMU, "", 0),
                 new RemoteManifest.Asset(StrykerEndpoints.FALLBACK_ROOTLESS_KERNEL, "", 0),
                 new RemoteManifest.Asset(StrykerEndpoints.FALLBACK_ROOTLESS_INITRD, "", 0),
                 new RemoteManifest.Asset(StrykerEndpoints.FALLBACK_ROOTLESS_LIBSLIRP, "", 0),
-                new RemoteManifest.Asset(StrykerEndpoints.FALLBACK_ROOTLESS_ROOTFS, "", 0),
-                null);
+                new RemoteManifest.Asset(StrykerEndpoints.FALLBACK_ROOTLESS_ROOTFS, "", 0));
     }
 }

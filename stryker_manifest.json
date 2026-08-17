@@ -53,15 +53,10 @@
         "size": 1145496
       },
       "qemuXiaomi": {
-        "note": "Xiaomi/MIUI ARM64 QEMU binary with ep0 maxpacket quirk (bMaxPacketSize0 forced to 64). Non-Xiaomi devices must use 'qemu' instead. Needs libc++Shared.",
-        "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/qemu-system-aarch64-xiaomi",
-        "sha256": "ca72de1c9871621c3ded2a5a5bda39193d6ce635de48a3365261290ef58ea8e3",
-        "size": 22151640
-      },
-      "libcxxShared": {
-        "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/libc++_shared.so",
-        "sha256": "73a8cb7f0529d2dcc22089c6cf30c86383d708451ecfafe1cd6ecc4f0e661df2",
-        "size": 6764968
+        "note": "Xiaomi/MIUI ARM64 QEMU 11.0.2 binary with ep0 maxpacket quirk. Non-Xiaomi devices must use 'qemu' instead. Same NEEDED libs as qemu (libslirp.so).",
+        "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/v1.0.7/qemu-system-aarch64-xiaomi",
+        "sha256": "cdc11eb7b59961c440955e1fe84492f759da9aa1018defd3446ed215801618e3",
+        "size": 38146488
       },
       "rootfs": {
         "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/rootfs.imgz",

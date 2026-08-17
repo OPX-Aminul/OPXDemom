@@ -55,17 +55,15 @@ public final class RemoteManifest {
         public final Asset libslirp;
         public final Asset rootfs;
         public final Asset qemuXiaomi;
-        public final Asset libcxxShared;
 
         RootlessAssets(Asset qemu, Asset kernel, Asset initrd, Asset libslirp, Asset rootfs,
-                       Asset qemuXiaomi, Asset libcxxShared) {
+                       Asset qemuXiaomi) {
             this.qemu = qemu;
             this.kernel = kernel;
             this.initrd = initrd;
             this.libslirp = libslirp;
             this.rootfs = rootfs;
             this.qemuXiaomi = qemuXiaomi;
-            this.libcxxShared = libcxxShared;
         }
 
         public boolean isComplete() {
@@ -156,8 +154,7 @@ public final class RemoteManifest {
                     asset(rootless.optJSONObject("initrd")),
                     asset(rootless.optJSONObject("libslirp")),
                     asset(rootless.optJSONObject("rootfs")),
-                    asset(rootless.optJSONObject("qemuXiaomi")),
-                    asset(rootless.optJSONObject("libcxxShared")));
+                    asset(rootless.optJSONObject("qemuXiaomi")));
             JSONObject arm32 = rootless.optJSONObject("arm32");
             if (arm32 != null) {
                 manifest.rootless32 = new RootlessAssets(
@@ -166,7 +163,7 @@ public final class RemoteManifest {
                         asset(arm32.optJSONObject("initrd")),
                         asset(arm32.optJSONObject("libslirp")),
                         asset(arm32.optJSONObject("rootfs")),
-                        null, null);
+                        null);
             }
         }
 

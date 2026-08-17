@@ -26,9 +26,6 @@ public final class RootlessPaths {
         // libslirp-arm.so but it is stored under the linked name, matching the 64-bit layout.
         return new File(base(c), "libslirp.so");
     }
-    public static File libcxxShared(Context c) {
-        return new File(base(c), "libc++_shared.so");
-    }
     public static File kernel(Context c)    {
         return new File(base(c), Core.isArmV7() ? "Image-armv7" : "Image");
     }

@@ -127,15 +127,6 @@ public final class QemuInstaller {
             String libslirpAsset = com.zalexdev.stryker.utils.Core.isArmV7()
                     ? ASSET_DIR + "/libslirp-arm.so" : ASSET_DIR + "/libslirp.so";
             copyAsset(am, libslirpAsset, RootlessPaths.libslirp(context), p, "libslirp.so");
-            // Xiaomi builds need libc++_shared.so alongside the binary
-            if (com.zalexdev.stryker.utils.Core.isXiaomi()) {
-                String libcxxAsset = ASSET_DIR + "/libc++_shared.so";
-                try {
-                    copyAsset(am, libcxxAsset, RootlessPaths.libcxxShared(context), p, "libc++_shared.so");
-                } catch (IOException ignored) {
-                    log(p, 1, "libc++_shared.so not bundled in APK (will be downloaded at runtime)");
-                }
-            }
 
             stage(p, Stage.DECOMPRESSING_ROOTFS);
             String rootfsAsset = rootfsAssetName(context);
@@ -188,9 +179,6 @@ public final class QemuInstaller {
 
             stage(p, Stage.EXTRACTING_LIBS);
             if (!fetch(b.libslirp, RootlessPaths.libslirp(context), "libslirp.so", p)) return false;
-            if (b.libcxxShared != null && b.libcxxShared.isUsable()) {
-                fetch(b.libcxxShared, RootlessPaths.libcxxShared(context), "libc++_shared.so", p);
-            }
 
             stage(p, Stage.DECOMPRESSING_ROOTFS);
             File rootfs = RootlessPaths.rootfs(context);
