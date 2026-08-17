@@ -53,9 +53,9 @@
         "size": 1145496
       },
       "qemuXiaomi": {
-        "note": "Xiaomi/MIUI ARM64 binary-patched from original qemu-system-aarch64. Forces bMaxPacketSize0=64 in USB device descriptor responses to fix 'Invalid ep0 maxpacket' on Xiaomi/MIUI devices. Non-Xiaomi devices must use 'qemu' instead.",
+        "note": "Xiaomi/MIUI ARM64 binary-patched from original qemu-system-aarch64. Fixes 'Invalid ep0 maxpacket' on Xiaomi/MIUI devices by correcting bMaxPacketSize0 in GET_DESCRIPTOR(device) responses: 8 for low-speed devices, 64 for all others. Only affects device-descriptor requests; all other descriptors pass through unchanged. Non-Xiaomi devices must use 'qemu' instead.",
         "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/qemu-system-aarch64-xiaomi",
-        "sha256": "eb6db2015c82b3734401d3107ca4219e6671b72b4320529ab6f9bdfce4c79790",
+        "sha256": "4cbf90d08384ebf9e8b7f679bca2a149d76dcd20d2bb9b1b34756e4f043ffe1e",
         "size": 43800304
       },
       "rootfs": {
