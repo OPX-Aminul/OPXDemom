@@ -53,10 +53,10 @@
         "size": 1145496
       },
       "qemuXiaomi": {
-        "note": "Xiaomi/MIUI ARM64 QEMU 11.0.2 binary with ep0 maxpacket quirk. Non-Xiaomi devices must use 'qemu' instead. Same NEEDED libs as qemu (libslirp.so).",
+        "note": "Xiaomi/MIUI ARM64 binary-patched from original qemu-system-aarch64. Forces bMaxPacketSize0=64 in USB device descriptor responses to fix 'Invalid ep0 maxpacket' on Xiaomi/MIUI devices. Non-Xiaomi devices must use 'qemu' instead.",
         "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/qemu-system-aarch64-xiaomi",
-        "sha256": "cdc11eb7b59961c440955e1fe84492f759da9aa1018defd3446ed215801618e3",
-        "size": 38146488
+        "sha256": "eb6db2015c82b3734401d3107ca4219e6671b72b4320529ab6f9bdfce4c79790",
+        "size": 43800304
       },
       "rootfs": {
         "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/rootfs.imgz",
