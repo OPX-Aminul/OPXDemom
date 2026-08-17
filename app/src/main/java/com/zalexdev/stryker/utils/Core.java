@@ -449,19 +449,11 @@ public class Core {
     }
 
     public static boolean isArm64() {
-        if (Build.SUPPORTED_ABIS == null) return false;
-        for (String abi : Build.SUPPORTED_ABIS) {
-            if ("arm64-v8a".equals(abi)) return true;
-        }
-        return false;
+        return "arm64-v8a".equals(primaryAbi());
     }
 
     public static boolean isArmV7() {
-        if (Build.SUPPORTED_ABIS == null) return false;
-        for (String abi : Build.SUPPORTED_ABIS) {
-            if ("armeabi-v7a".equals(abi)) return true;
-        }
-        return false;
+        return "armeabi-v7a".equals(primaryAbi());
     }
 
     public static boolean isXiaomi() {

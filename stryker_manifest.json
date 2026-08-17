@@ -96,7 +96,7 @@
     "versionCode": 608,
     "versionName": "1.0.7",
     "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/app-release.apk",
-    "sha256": "75cdd8643b83a73ea20e481ddbf23e4bdc743784ed4dc1fcf9b5fab94221469a",
+    "sha256": "ce68adf2e6361a1e16ccfbc503d9b387b86f1246cb38bf2c7bdec82d86cb39dd",
     "size": 20911091,
     "mandatory": false,
     "changelog": "v1.0.7\n\nFixed\n- Architecture detection: app now correctly downloads 32-bit files for 32-bit devices and 64-bit files for 64-bit devices, instead of sometimes downloading the wrong architecture.\n- Xiaomi binary selection: 64-bit Xiaomi devices get the patched qemu-system-aarch64-xiaomi; 32-bit Xiaomi devices correctly use the standard qemu-system-arm (no Xiaomi binary exists for 32-bit).\n- Xiaomi/MIUI USB passthrough: QEMU now correctly enumerates USB devices on Xiaomi phones. A dedicated qemu-system-aarch64-xiaomi binary patches the xHCI virtual controller to force ep0 maxpacket to 64 bytes, fixing the 'Invalid ep0 maxpacket: 64' error.\n- Non-Xiaomi devices are completely unaffected."
