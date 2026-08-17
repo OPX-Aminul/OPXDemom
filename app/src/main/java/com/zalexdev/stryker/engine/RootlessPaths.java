@@ -15,6 +15,9 @@ public final class RootlessPaths {
     }
 
     public static File qemuBin(Context c)   {
+        if (com.zalexdev.stryker.utils.Core.isXiaomi()) {
+            return new File(base(c), "qemu-system-aarch64-xiaomi");
+        }
         return new File(base(c), Core.isArmV7() ? "qemu-system-arm" : "qemu-system-aarch64");
     }
     public static File libslirp(Context c)  {
@@ -22,6 +25,9 @@ public final class RootlessPaths {
         // so the file must always be named libslirp.so. On armv7 the download asset is called
         // libslirp-arm.so but it is stored under the linked name, matching the 64-bit layout.
         return new File(base(c), "libslirp.so");
+    }
+    public static File libcxxShared(Context c) {
+        return new File(base(c), "libc++_shared.so");
     }
     public static File kernel(Context c)    {
         return new File(base(c), Core.isArmV7() ? "Image-armv7" : "Image");

@@ -999,6 +999,9 @@ public final class RootlessEngine {
 
         if (usbEnabled) {
             a.add("-device"); a.add("qemu-xhci,id=usbhc0,p2=8,p3=8");
+            if (com.zalexdev.stryker.utils.Core.isXiaomi()) {
+                a.add("-global"); a.add("usb-host,xiaomi-ep0-quirk=on");
+            }
         }
 
         if (rngEnabled) { a.add("-device"); a.add("virtio-rng-pci"); }

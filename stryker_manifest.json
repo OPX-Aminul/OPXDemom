@@ -52,6 +52,17 @@
         "sha256": "226372426fda32c9fccd8e831d0901a86bfff3c3e6f7a60336d6dde149f756c4",
         "size": 1145496
       },
+      "qemuXiaomi": {
+        "note": "Xiaomi/MIUI ARM64 QEMU binary with ep0 maxpacket quirk (bMaxPacketSize0 forced to 64). Non-Xiaomi devices must use 'qemu' instead. Needs libc++Shared.",
+        "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/qemu-system-aarch64-xiaomi",
+        "sha256": "ca72de1c9871621c3ded2a5a5bda39193d6ce635de48a3365261290ef58ea8e3",
+        "size": 22151640
+      },
+      "libcxxShared": {
+        "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/libc++_shared.so",
+        "sha256": "73a8cb7f0529d2dcc22089c6cf30c86383d708451ecfafe1cd6ecc4f0e661df2",
+        "size": 6764968
+      },
       "rootfs": {
         "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/rootfs.imgz",
         "sha256": "f80c2b1e2433c3036aa745da2a5935cf5dd61b65b17bbeabae87b49bd68a12ef",
@@ -87,13 +98,13 @@
       }
     },
   "app": {
-    "versionCode": 607,
-    "versionName": "1.0.6",
-    "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/v1.0.6/app-release.apk",
-    "sha256": "5f7147cd042d87d8843540b83279813ef5c0d609316de9615837d243e7ba6d0f",
-    "size": 20911091,
+    "versionCode": 608,
+    "versionName": "1.0.7",
+    "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/app-release.apk",
+    "sha256": "5e88ca3a2747c193900cbda25e0b396a158789730b9ab83eb91e0792d47a876e",
+    "size": 20915187,
     "mandatory": false,
-    "changelog": "v1.0.6\n\nFixed\n- Intro no longer blocks on permissions: previously the \"Grant Permission\" screen trapped users on \"Check permission again\" even after every grantable permission was granted. Devices where some permission can never be granted (all-files access hidden/ignored by the OEM, Android 13+ media permissions permanently denied, \"don't ask again\", etc.) could never proceed.\n- Android 13 (API 33)+ now declares READ_MEDIA_IMAGES/VIDEO/AUDIO in the manifest, so those runtime dialogs are actually shown instead of being silently auto-denied.\n- The permission screen now tries to grant everything the app needs, then always advances: whatever permissions are missing, the app still opens and falls back to app-private storage."
+    "changelog": "v1.0.7\n\nFixed\n- Xiaomi/MIUI USB passthrough: QEMU now correctly enumerates USB devices on Xiaomi phones. A dedicated qemu-system-aarch64-xiaomi binary patches the xHCI virtual controller to force ep0 maxpacket to 64 bytes, fixing the 'Invalid ep0 maxpacket: 64' error that prevented USB device attachment on Xiaomi/MIUI devices.\n- Xiaomi devices auto-detect and download the patched QEMU binary from the release manifest.\n- Non-Xiaomi devices are completely unaffected (standard binary used)."
   },
   "news": [
     {

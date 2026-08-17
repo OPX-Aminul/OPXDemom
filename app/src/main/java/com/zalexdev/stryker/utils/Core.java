@@ -464,6 +464,11 @@ public class Core {
         return false;
     }
 
+    public static boolean isXiaomi() {
+        String m = Build.MANUFACTURER;
+        return m != null && m.equalsIgnoreCase("Xiaomi");
+    }
+
     public static boolean isSupportedArch() {
         return isArm64() || isArmV7();
     }

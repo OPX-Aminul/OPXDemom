@@ -67,7 +67,9 @@ public final class QemuInstaller {
 
     public static boolean assetsPresent(Context c) {
         boolean armV7 = com.zalexdev.stryker.utils.Core.isArmV7();
-        String qemuName = armV7 ? "qemu-system-arm" : "qemu-system-aarch64";
+        boolean xiaomi = com.zalexdev.stryker.utils.Core.isXiaomi();
+        String qemuName = armV7 ? "qemu-system-arm"
+                : (xiaomi ? "qemu-system-aarch64-xiaomi" : "qemu-system-aarch64");
         try {
             String[] files = c.getAssets().list(ASSET_DIR);
             if (files == null) return false;
@@ -104,7 +106,10 @@ public final class QemuInstaller {
 
             stage(p, Stage.EXTRACTING_QEMU);
             String qemuAsset = com.zalexdev.stryker.utils.Core.isArmV7()
-                    ? ASSET_DIR + "/qemu-system-arm" : ASSET_DIR + "/qemu-system-aarch64";
+                    ? ASSET_DIR + "/qemu-system-arm"
+                    : (com.zalexdev.stryker.utils.Core.isXiaomi()
+                            ? ASSET_DIR + "/qemu-system-aarch64-xiaomi"
+                            : ASSET_DIR + "/qemu-system-aarch64");
             copyAsset(am, qemuAsset, RootlessPaths.qemuBin(context), p, "QEMU");
             RootlessPaths.qemuBin(context).setExecutable(true, false);
 
@@ -122,6 +127,15 @@ public final class QemuInstaller {
             String libslirpAsset = com.zalexdev.stryker.utils.Core.isArmV7()
                     ? ASSET_DIR + "/libslirp-arm.so" : ASSET_DIR + "/libslirp.so";
             copyAsset(am, libslirpAsset, RootlessPaths.libslirp(context), p, "libslirp.so");
+            // Xiaomi builds need libc++_shared.so alongside the binary
+            if (com.zalexdev.stryker.utils.Core.isXiaomi()) {
+                String libcxxAsset = ASSET_DIR + "/libc++_shared.so";
+                try {
+                    copyAsset(am, libcxxAsset, RootlessPaths.libcxxShared(context), p, "libc++_shared.so");
+                } catch (IOException ignored) {
+                    log(p, 1, "libc++_shared.so not bundled in APK (will be downloaded at runtime)");
+                }
+            }
 
             stage(p, Stage.DECOMPRESSING_ROOTFS);
             String rootfsAsset = rootfsAssetName(context);
@@ -174,6 +188,9 @@ public final class QemuInstaller {
 
             stage(p, Stage.EXTRACTING_LIBS);
             if (!fetch(b.libslirp, RootlessPaths.libslirp(context), "libslirp.so", p)) return false;
+            if (b.libcxxShared != null && b.libcxxShared.isUsable()) {
+                fetch(b.libcxxShared, RootlessPaths.libcxxShared(context), "libc++_shared.so", p);
+            }
 
             stage(p, Stage.DECOMPRESSING_ROOTFS);
             File rootfs = RootlessPaths.rootfs(context);
