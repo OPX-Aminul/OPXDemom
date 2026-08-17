@@ -61,8 +61,8 @@
         "note": "32-bit ARM (armeabi-v7a) rootless.",
         "qemu": {
           "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/qemu-system-arm",
-          "sha256": "60aff4067adc5dd275b6e0debd1d256f07dcfa824d71996a568416fab3d34a03",
-          "size": 20017824
+          "sha256": "8e590dcbb4c12816cbb7c48ff12b939ecb07ea617b9611e0f81397b343d18a48",
+          "size": 20032792
         },
         "kernel": {
           "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/Image-armv7",
