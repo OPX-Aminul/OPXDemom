@@ -54,7 +54,7 @@
       },
       "qemuXiaomi": {
         "note": "Xiaomi/MIUI ARM64 QEMU 11.0.2 binary with ep0 maxpacket quirk. Non-Xiaomi devices must use 'qemu' instead. Same NEEDED libs as qemu (libslirp.so).",
-        "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/v1.0.7/qemu-system-aarch64-xiaomi",
+        "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/all-corefile/qemu-system-aarch64-xiaomi",
         "sha256": "cdc11eb7b59961c440955e1fe84492f759da9aa1018defd3446ed215801618e3",
         "size": 38146488
       },
