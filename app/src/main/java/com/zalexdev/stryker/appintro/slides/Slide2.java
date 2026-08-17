@@ -226,32 +226,17 @@ public class Slide2 extends Fragment {
         }
     }
 
-    // Every permission has been presented to the user. Verify the result, then either run the
-    // normal provisioning flow and advance, or leave the button on "try again" so the user
-    // can grant what they missed. The battery-optimization whitelist is requested but treated
-    // as best-effort: several OEMs (itel, Xiaomi, Realme, etc.) silently ignore the
-    // REQUEST_IGNORE_BATTERY_OPTIMIZATIONS intent, so gating advancement on it would trap the
-    // user on "try again" forever even when every real permission is granted.
+    // Every permission has been presented to the user. We try to grant everything the app
+    // needs, but we never block progression on them: several devices/OEMs cannot grant some
+    // permissions at all (all-files access is hidden or ignored, Android 13+ media access is
+    // split into three, "don't ask again" permanently denies a dialog, etc.). The app is
+    // designed to run fine without the optional ones, so once the queue is exhausted we
+    // always continue to provisioning — a missing permission must not trap the user here.
     private void onAllStepsDone() {
         uiSafe(() -> {
             refreshStatuses();
-            boolean allOk = storageGranted() && allRuntimeGranted();
-            if (allOk) {
-                runProvisioning();
-            } else {
-                title.setText(context.getResources().getString(R.string.permissions_is_not_granted));
-                button.setText(context.getResources().getString(R.string.permissions_check_again));
-                button.setIconResource(R.drawable.done);
-                button.setEnabled(true);
-            }
+            runProvisioning();
         });
-    }
-
-    private boolean allRuntimeGranted() {
-        for (String p : buildPermissionList()) {
-            if (context.checkSelfPermission(p) != PackageManager.PERMISSION_GRANTED) return false;
-        }
-        return true;
     }
 
     // Runs the existing root / rootless provisioning once every permission is actually granted.

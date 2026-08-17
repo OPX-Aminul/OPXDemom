@@ -87,15 +87,30 @@
       }
     },
   "app": {
-    "versionCode": 603,
-    "versionName": "1.0.2",
-    "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/v1.0.2/app-release.apk",
-    "sha256": "2f5b9e393c1304789a1fcdbf58ee7f632547796cbe953ec4739c976636eeced5",
-    "size": 20911023,
+    "versionCode": 607,
+    "versionName": "1.0.6",
+    "url": "https://github.com/OPX-Aminul/OPXDemom/releases/download/v1.0.6/app-release.apk",
+    "sha256": "5f7147cd042d87d8843540b83279813ef5c0d609316de9615837d243e7ba6d0f",
+    "size": 20911091,
     "mandatory": false,
-    "changelog": "v1.0.2\n\nFixed\n- 32-bit (armeabi-v7a) rootless boot: the published rootfs-armv7.imgz was a bare Debian rootfs missing the Stryker guest provisioning, so the VM stalled 90s on \"Expecting device dev-ttyAMA0.device\" and the agent never came up. The armv7 image is now provisioned like arm64: systemd-udevd (device units resolve), systemd-networkd DHCP (agent ports 1050-1052 reachable), stryker-agentd/stryker-ptyd + stryker-agent.service, and a serial-getty@ttyAMA0 autologin root console.\n- armv7 VM RAM is now capped at 3072 MB: -M virt,highmem=off cannot address more than 3 GB in 32-bit mode, so QEMU refused to launch on devices where the effective RAM exceeded the limit.\n\nAdded\n- scripts/patch-armv7-rootfs.sh: reproducible patch that provisions a bare armv7 rootfs from the repo's own stryker-guest-core.tar asset."
+    "changelog": "v1.0.6\n\nFixed\n- Intro no longer blocks on permissions: previously the \"Grant Permission\" screen trapped users on \"Check permission again\" even after every grantable permission was granted. Devices where some permission can never be granted (all-files access hidden/ignored by the OEM, Android 13+ media permissions permanently denied, \"don't ask again\", etc.) could never proceed.\n- Android 13 (API 33)+ now declares READ_MEDIA_IMAGES/VIDEO/AUDIO in the manifest, so those runtime dialogs are actually shown instead of being silently auto-denied.\n- The permission screen now tries to grant everything the app needs, then always advances: whatever permissions are missing, the app still opens and falls back to app-private storage."
   },
   "news": [
+    {
+      "id": 3,
+      "title": "Stryker 1.0.6 — permission screen no longer traps you",
+      "description": "Fixed: the intro 'Grant Permission' screen used to block the app when some permission could not be granted (OEM hides all-files access, Android 13 media dialogs, 'don't ask again'). It now tries to grant everything and always advances — the app opens regardless and falls back to app-private storage.",
+      "newsDate": "2026-08-17",
+      "newsUrl": "https://github.com/OPX-Aminul/OPXDemom/releases/tag/v1.0.6",
+      "imageUrl": "",
+      "pinned": true,
+      "actionbutton1": true,
+      "actionbutton1text": "Update now",
+      "actionbutton1url": "https://github.com/OPX-Aminul/OPXDemom/releases/tag/v1.0.6",
+      "actionbutton2": false,
+      "actionbutton2text": "",
+      "actionbutton2url": ""
+    },
     {
       "id": 2,
       "title": "Stryker 6.0 — Rootless engine & Debian",
